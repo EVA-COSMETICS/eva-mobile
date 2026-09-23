@@ -1,11 +1,20 @@
-import Button from "@/components/Button";
-import Screen from "@/components/Screen";
-import { colors, fonts, space } from "@/theme";
+import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import { router } from "expo-router";
 import { ShoppingBag } from "lucide-react-native";
-import { StyleSheet, Text, View } from "react-native";
+import Screen from "@/components/Screen";
+import Button from "@/components/Button";
+import ProductRail from "@/components/product/ProductRail";
+import { useProducts } from "@/lib/products";
+import { colors, fonts, space } from "@/theme";
 
-// Ana sayfa — içerikler bir sonraki adımda siteden (API) gelecek
+// Ana sayfa — çok satanlar siteden (API) canlı gelir
 export default function HomeScreen() {
+  // Çok satanlar (otomatik ilk 10 + admin seçimi); henüz yoksa öne çıkan ürünler
+  const best = useProducts({ bestsellers: true, sort: "bestsellers", limit: 12 });
+  const featured = useProducts({ sort: "featured", limit: 12 }, best.loaded && best.products.length === 0);
+  const bestList = best.products.length ? best.products : featured.products;
+  const loading = best.loading || featured.loading;
+
   return (
     <Screen>
       {/* Üst bar */}
@@ -25,16 +34,20 @@ export default function HomeScreen() {
           Bilimsel formüller ve özenle seçilmiş içeriklerle, her gün kendinizi daha iyi hissettiren bakım.
         </Text>
         <View style={styles.heroButton}>
-          <Button label="Ürünleri Keşfet" />
+          <Button label="Ürünleri Keşfet" onPress={() => router.push("/kategoriler")} />
         </View>
       </View>
 
-      <View style={styles.note}>
-        <Text style={styles.noteTitle}>Yakında burada</Text>
-        <Text style={styles.noteText}>
-          Kategoriler, öne çıkan ürünler ve kampanyalar bir sonraki adımda siteden canlı olarak gelecek.
-        </Text>
-      </View>
+      {/* Çok satanlar */}
+      {(loading || bestList.length > 0) && (
+        <View style={styles.section}>
+          <Text style={styles.sectionEyebrow}>EN ÇOK TERCİH EDİLENLER</Text>
+          <Text style={styles.sectionTitle}>{best.products.length ? "Çok Satanlar" : "Öne Çıkanlar"}</Text>
+          <View style={styles.rail}>
+            {loading && !bestList.length ? <ActivityIndicator color={colors.gold} /> : <ProductRail products={bestList} />}
+          </View>
+        </View>
+      )}
     </Screen>
   );
 }
@@ -68,7 +81,8 @@ const styles = StyleSheet.create({
     marginTop: space.md,
   },
   heroButton: { marginTop: space.xl, alignSelf: "stretch" },
-  note: { marginTop: space.xl, padding: space.lg, borderWidth: 1, borderColor: colors.border, backgroundColor: colors.white },
-  noteTitle: { fontFamily: fonts.serif, fontSize: 22, color: colors.ink },
-  noteText: { fontFamily: fonts.sans, fontSize: 13, lineHeight: 20, color: colors.muted, marginTop: space.xs },
+  section: { marginTop: space.xxl },
+  sectionEyebrow: { fontFamily: fonts.sansMedium, fontSize: 10, letterSpacing: 3, color: colors.gold },
+  sectionTitle: { marginTop: space.sm, fontFamily: fonts.serifLight, fontSize: 34, lineHeight: 38, color: colors.ink },
+  rail: { marginTop: space.lg, marginHorizontal: -space.lg, minHeight: 60, justifyContent: "center" },
 });
