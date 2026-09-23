@@ -3,13 +3,19 @@ import { colors, fonts, space } from "@/theme";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { ArrowUpRight } from "lucide-react-native";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View, useWindowDimensions } from "react-native";
 
 // Büyük görselli kategori kartı (üst seviye kategoriler)
 export function CategoryBanner({ category, onPress }: { category: Category; onPress: () => void }) {
     const image = category.banner ?? category.image;
+    // Genişliği ekrandan hesapla: iki yanda eşit (24px) boşluk kalır, oran 3:2 korunur
+    const { width: screenWidth } = useWindowDimensions();
+    const width = screenWidth - space.lg * 2;
     return (
-        <Pressable onPress={onPress} style={({ pressed }) => [styles.banner, { backgroundColor: category.tone }, pressed && styles.pressed]}>
+        <Pressable
+            onPress={onPress}
+            style={({ pressed }) => [styles.banner, { width, height: (width * 2) / 3, backgroundColor: category.tone }, pressed && styles.pressed]}
+        >
             {image && <Image source={{ uri: image }} style={StyleSheet.absoluteFill} contentFit="cover" transition={400} />}
             <LinearGradient colors={["transparent", "rgba(28,25,23,0.55)"]} style={StyleSheet.absoluteFill} />
             <View style={styles.bannerContent}>
@@ -45,7 +51,7 @@ export function CategoryRow({ category, onPress }: { category: Category; onPress
 const styles = StyleSheet.create({
     flex: { flex: 1 },
     pressed: { opacity: 0.85, transform: [{ scale: 0.99 }] },
-    banner: { aspectRatio: 3 / 2, overflow: "hidden", marginBottom: space.md, justifyContent: "flex-end" },
+    banner: { alignSelf: "center", overflow: "hidden", marginBottom: space.md, justifyContent: "flex-end" },
     bannerContent: { flexDirection: "row", alignItems: "flex-end", padding: space.lg },
     bannerTitle: { fontFamily: fonts.serifLight, fontSize: 32, lineHeight: 36, color: colors.cream },
     bannerMeta: { marginTop: 4, fontFamily: fonts.sans, fontSize: 12, letterSpacing: 0.5, color: "rgba(250,247,242,0.8)" },

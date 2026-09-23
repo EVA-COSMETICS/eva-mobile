@@ -1,3 +1,18 @@
+import BackHeader from "@/components/BackHeader";
+import Button from "@/components/Button";
+import EmptyState from "@/components/EmptyState";
+import Badges from "@/components/product/Badges";
+import DetailAccordion, { type DetailItem } from "@/components/product/DetailAccordion";
+import ProductRail from "@/components/product/ProductRail";
+import ReviewSection from "@/components/product/ReviewSection";
+import Stars from "@/components/product/Stars";
+import { ApiError } from "@/lib/api";
+import { useAuth } from "@/lib/auth";
+import { fetchProduct, formatPrice, useProducts, type ProductResponse } from "@/lib/products";
+import { colors, fonts, space } from "@/theme";
+import { Image } from "expo-image";
+import { router, useLocalSearchParams } from "expo-router";
+import { Minus, PackageX, Plus, RotateCcw, ShieldCheck, Truck, WifiOff } from "lucide-react-native";
 import { useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -13,21 +28,6 @@ import {
   useWindowDimensions,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { router, useLocalSearchParams } from "expo-router";
-import { Image } from "expo-image";
-import { Minus, PackageX, Plus, RotateCcw, ShieldCheck, Truck, WifiOff } from "lucide-react-native";
-import BackHeader from "@/components/BackHeader";
-import Button from "@/components/Button";
-import EmptyState from "@/components/EmptyState";
-import Badges from "@/components/product/Badges";
-import RichText from "@/components/product/RichText";
-import ReviewSection from "@/components/product/ReviewSection";
-import ProductRail from "@/components/product/ProductRail";
-import Stars from "@/components/product/Stars";
-import { ApiError } from "@/lib/api";
-import { useAuth } from "@/lib/auth";
-import { fetchProduct, formatPrice, useProducts, type ProductResponse } from "@/lib/products";
-import { colors, fonts, space } from "@/theme";
 
 export default function ProductScreen() {
   const { slug } = useLocalSearchParams<{ slug: string }>();
@@ -54,6 +54,15 @@ export default function ProductScreen() {
   const product = data?.product;
   const related = useProducts({ category: product?.category.id, limit: 7 }, Boolean(product));
   const others = related.products.filter((p) => p.id !== product?.id).slice(0, 6);
+
+  // Açıklama / Kullanım / İçindekiler — yalnızca dolu olanlar gösterilir
+  const detailItems: DetailItem[] = product
+    ? [
+      { id: "aciklama", title: "Açıklama", html: product.description.tr },
+      { id: "kullanim", title: "Kullanım", html: product.usage?.tr },
+      { id: "icindekiler", title: "İçindekiler", text: product.ingredients?.tr },
+    ].filter((i) => i.html || i.text)
+    : [];
 
   return (
     <SafeAreaView style={styles.safe} edges={["top"]}>
@@ -125,13 +134,11 @@ export default function ProductScreen() {
               </View>
             </View>
 
-            {product.description.tr && (
+            {detailItems.length > 0 && (
               <View style={styles.section}>
-                <Text style={styles.eyebrow}>ÜRÜN DETAYLARI</Text>
-                <Text style={styles.sectionTitle}>Formül & Kullanım</Text>
-                <View style={{ marginTop: space.lg }}>
-                  <RichText html={product.description.tr} />
-                </View>
+                <Text style={styles.eyebrow}>ÜRÜN HAKKINDA</Text>
+                <Text style={[styles.sectionTitle, { marginBottom: space.lg }]}>Detaylar</Text>
+                <DetailAccordion items={detailItems} />
                 {product.sku && <Text style={styles.sku}>Ürün kodu: {product.sku}</Text>}
               </View>
             )}

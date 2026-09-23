@@ -28,6 +28,8 @@ export type ProductSummary = {
 
 export type ProductDetail = ProductSummary & {
   description: { tr: string | null; en: string | null }; // zengin metin (HTML)
+  usage: { tr: string | null; en: string | null }; // kullanım talimatı (zengin metin)
+  ingredients: { tr: string | null; en: string | null }; // içindekiler (düz metin)
   gallery: { thumb: string; detail: string }[];
   breadcrumbs: { slug: string; name: L; path: string[] }[];
   sku: string | null;
