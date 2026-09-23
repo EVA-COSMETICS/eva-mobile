@@ -1,18 +1,18 @@
-import { useState } from "react";
-import { Stack } from "expo-router";
-import * as SplashScreen from "expo-splash-screen";
-import { StatusBar } from "expo-status-bar";
-import {
-  useFonts,
-  CormorantGaramond_300Light,
-  CormorantGaramond_400Regular,
-  CormorantGaramond_500Medium,
-} from "@expo-google-fonts/cormorant-garamond";
-import { Manrope_400Regular, Manrope_500Medium, Manrope_600SemiBold } from "@expo-google-fonts/manrope";
-import { colors } from "@/theme";
 import AnimatedSplash from "@/components/AnimatedSplash";
 import { AuthProvider } from "@/lib/auth";
 import { IntroProvider, useIntro } from "@/lib/intro";
+import { colors } from "@/theme";
+import {
+  CormorantGaramond_300Light,
+  CormorantGaramond_400Regular,
+  CormorantGaramond_500Medium,
+  useFonts,
+} from "@expo-google-fonts/cormorant-garamond";
+import { Manrope_400Regular, Manrope_500Medium, Manrope_600SemiBold } from "@expo-google-fonts/manrope";
+import { Stack } from "expo-router";
+import * as SplashScreen from "expo-splash-screen";
+import { StatusBar } from "expo-status-bar";
+import { useState } from "react";
 
 // Fontlar ve tanıtım bilgisi yüklenene kadar telefonun kendi açılış ekranı kalsın
 SplashScreen.preventAutoHideAsync();
@@ -65,6 +65,7 @@ function RootStack() {
           <Stack.Screen name="giris" />
           <Stack.Screen name="kategori/[id]" />
           <Stack.Screen name="urun/[slug]" />
+          <Stack.Screen name="kampanya/[slug]" />
           <Stack.Screen name="yasal/[slug]" />
         </Stack.Protected>
       </Stack>
