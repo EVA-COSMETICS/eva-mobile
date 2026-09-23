@@ -1,18 +1,3 @@
-import BackHeader from "@/components/BackHeader";
-import Button from "@/components/Button";
-import EmptyState from "@/components/EmptyState";
-import Badges from "@/components/product/Badges";
-import DetailAccordion, { type DetailItem } from "@/components/product/DetailAccordion";
-import ProductRail from "@/components/product/ProductRail";
-import ReviewSection from "@/components/product/ReviewSection";
-import Stars from "@/components/product/Stars";
-import { ApiError } from "@/lib/api";
-import { useAuth } from "@/lib/auth";
-import { fetchProduct, formatPrice, useProducts, type ProductResponse } from "@/lib/products";
-import { colors, fonts, space } from "@/theme";
-import { Image } from "expo-image";
-import { router, useLocalSearchParams } from "expo-router";
-import { Minus, PackageX, Plus, RotateCcw, ShieldCheck, Truck, WifiOff } from "lucide-react-native";
 import { useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -28,6 +13,21 @@ import {
   useWindowDimensions,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { router, useLocalSearchParams } from "expo-router";
+import { Image } from "expo-image";
+import { Minus, PackageX, Plus, RotateCcw, ShieldCheck, Truck, WifiOff } from "lucide-react-native";
+import BackHeader from "@/components/BackHeader";
+import Button from "@/components/Button";
+import EmptyState from "@/components/EmptyState";
+import Badges from "@/components/product/Badges";
+import DetailAccordion, { type DetailItem } from "@/components/product/DetailAccordion";
+import ReviewSection from "@/components/product/ReviewSection";
+import ProductRail from "@/components/product/ProductRail";
+import Stars from "@/components/product/Stars";
+import { ApiError } from "@/lib/api";
+import { useAuth } from "@/lib/auth";
+import { fetchProduct, formatPrice, useProducts, type ProductResponse } from "@/lib/products";
+import { colors, fonts, space } from "@/theme";
 
 export default function ProductScreen() {
   const { slug } = useLocalSearchParams<{ slug: string }>();
@@ -58,10 +58,10 @@ export default function ProductScreen() {
   // Açıklama / Kullanım / İçindekiler — yalnızca dolu olanlar gösterilir
   const detailItems: DetailItem[] = product
     ? [
-      { id: "aciklama", title: "Açıklama", html: product.description.tr },
-      { id: "kullanim", title: "Kullanım", html: product.usage?.tr },
-      { id: "icindekiler", title: "İçindekiler", text: product.ingredients?.tr },
-    ].filter((i) => i.html || i.text)
+        { id: "aciklama", title: "Açıklama", html: product.description.tr },
+        { id: "kullanim", title: "Kullanım", html: product.usage?.tr },
+        { id: "icindekiler", title: "İçindekiler", text: product.ingredients?.tr },
+      ].filter((i) => i.html || i.text)
     : [];
 
   return (
